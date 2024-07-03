@@ -1,0 +1,67 @@
+[tool.poetry]
+name = "parquet-duckdb-benchamrking"
+version = "0.0.1"
+description = ""
+authors = ["d33bs"]
+license = "BSD-3-Clause"
+readme = "readme.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pyarrow = "^16.1.0"
+pandas = "^2.2.2"
+duckdb = "^1.0.0"
+poethepoet = "^0.27.0"
+memray = "^1.13.3"
+
+[tool.poetry.group.dev.dependencies]
+jupyterlab = "^4.2.3"
+jupytext = "^1.16.2"
+jupyterlab-code-formatter = "^2.2.1"
+
+# defines task for generating data
+[tool.poe.tasks.generate_data]
+shell = """
+    python src/data/10000_x_5000_parquet_datasets_with_page_index.py &&
+    python src/data/10000_x_5000_parquet_datasets.py &&
+    python src/data/10000_x_5000_parquet_default_with_page_index.py &&
+    python src/data/10000_x_5000_parquet_default.py
+"""
+
+[tool.poe.tasks.benchmark_joins]
+shell = """
+    rm -f ./*.bin &&
+    rm -f ./*.html &&
+    memray run --output join_datasets_with_page_index.bin --force src/benchmarking/join_datasets_with_page_index.py &&
+    memray run --output join_datasets.bin --force src/benchmarking/join_datasets.py &&
+    memray run --output join_tables_with_page_index.bin --force src/benchmarking/join_tables_with_page_index.py &&
+    memray run --output join_tables.bin --force src/benchmarking/join_tables.py &&
+    memray run --output sorted_join_datasets_with_page_index.bin --force src/benchmarking/sorted_join_datasets_with_page_index.py &&
+    memray run --output sorted_join_datasets.bin --force src/benchmarking/sorted_join_datasets.py &&
+    memray run --output sorted_join_tables_with_page_index.bin --force src/benchmarking/sorted_join_tables_with_page_index.py &&
+    memray run --output sorted_join_tables.bin --force src/benchmarking/sorted_join_tables.py &&
+    memray flamegraph --output join_datasets_with_page_index.html --force join_datasets_with_page_index.bin &&
+    memray flamegraph --output join_datasets.html --force join_datasets.bin &&
+    memray flamegraph --output join_tables_with_page_index.html --force join_tables_with_page_index.bin &&
+    memray flamegraph --output join_tables.html --force join_tables.bin &&
+    memray flamegraph --output sorted_join_datasets_with_page_index.html --force sorted_join_datasets_with_page_index.bin &&
+    memray flamegraph --output sorted_join_datasets.html --force sorted_join_datasets.bin &&
+    memray flamegraph --output sorted_join_tables_with_page_index.html --force sorted_join_tables_with_page_index.bin &&
+    memray flamegraph --output sorted_join_tables.html --force sorted_join_tables.bin &&
+    open join_datasets_with_page_index.html &&
+    open join_datasets.html &&
+    open join_tables_with_page_index.html &&
+    open join_tables.html &&
+    open sorted_join_datasets_with_page_index.html &&
+    open sorted_join_datasets.html &&
+    open sorted_join_tables_with_page_index.html &&
+    open sorted_join_tables.html
+"""
+
+[tool.jupytext]
+formats = "ipynb,py:light"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
