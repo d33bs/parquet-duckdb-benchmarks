@@ -23,10 +23,16 @@ jupyterlab-code-formatter = "^2.2.1"
 # defines task for generating data
 [tool.poe.tasks.generate_data]
 shell = """
-    python src/data/10000_x_5000_parquet_datasets_with_page_index.py &&
-    python src/data/10000_x_5000_parquet_datasets.py &&
-    python src/data/10000_x_5000_parquet_default_with_page_index.py &&
-    python src/data/10000_x_5000_parquet_default.py
+    python src/data/6000_x_5000_parquet_datasets_with_page_index.py &&
+    python src/data/6000_x_5000_parquet_datasets.py &&
+    python src/data/6000_x_5000_parquet_default_with_page_index.py &&
+    python src/data/6000_x_5000_parquet_default.py &&
+    python src/data/6000_x_5000_parquet_datasets_zstd_with_page_index.py &&
+    python src/data/6000_x_5000_parquet_datasets_zstd.py &&
+    python src/data/6000_x_5000_parquet_datasets_byte_stream_split_with_page_index.py &&
+    python src/data/6000_x_5000_parquet_datasets_byte_stream_split_zstd_with_page_index.py &&
+    python src/data/6000_x_5000_parquet_datasets_byte_stream_split_zstd.py &&
+    python src/data/6000_x_5000_parquet_datasets_byte_stream_split.py
 """
 
 [tool.poe.tasks.benchmark_joins]
@@ -41,6 +47,12 @@ shell = """
     memray run --output sorted_join_datasets.bin --force src/benchmarking/sorted_join_datasets.py &&
     memray run --output sorted_join_tables_with_page_index.bin --force src/benchmarking/sorted_join_tables_with_page_index.py &&
     memray run --output sorted_join_tables.bin --force src/benchmarking/sorted_join_tables.py &&
+    memray run --output sorted_join_datasets_byte_stream_split_with_page_index.bin --force src/benchmarking/sorted_join_datasets_byte_stream_split_with_page_index.py &&
+    memray run --output sorted_join_datasets_byte_stream_split_zstd_with_page_index.bin --force src/benchmarking/sorted_join_datasets_byte_stream_split_zstd_with_page_index.py &&
+    memray run --output sorted_join_datasets_byte_stream_split_zstd.bin --force src/benchmarking/sorted_join_datasets_byte_stream_split_zstd.py &&
+    memray run --output sorted_join_datasets_byte_stream_split.bin --force src/benchmarking/sorted_join_datasets_byte_stream_split.py &&
+    memray run --output sorted_join_datasets_zstd_with_page_index.bin --force src/benchmarking/sorted_join_datasets_zstd_with_page_index.py &&
+    memray run --output sorted_join_datasets_zstd.bin --force src/benchmarking/sorted_join_datasets_zstd.py &&
     memray flamegraph --output join_datasets_with_page_index.html --force join_datasets_with_page_index.bin &&
     memray flamegraph --output join_datasets.html --force join_datasets.bin &&
     memray flamegraph --output join_tables_with_page_index.html --force join_tables_with_page_index.bin &&
@@ -49,14 +61,12 @@ shell = """
     memray flamegraph --output sorted_join_datasets.html --force sorted_join_datasets.bin &&
     memray flamegraph --output sorted_join_tables_with_page_index.html --force sorted_join_tables_with_page_index.bin &&
     memray flamegraph --output sorted_join_tables.html --force sorted_join_tables.bin &&
-    open join_datasets_with_page_index.html &&
-    open join_datasets.html &&
-    open join_tables_with_page_index.html &&
-    open join_tables.html &&
-    open sorted_join_datasets_with_page_index.html &&
-    open sorted_join_datasets.html &&
-    open sorted_join_tables_with_page_index.html &&
-    open sorted_join_tables.html
+    memray flamegraph --output sorted_join_datasets_byte_stream_split_with_page_index.html --force sorted_join_datasets_byte_stream_split_with_page_index.bin &&
+    memray flamegraph --output sorted_join_datasets_byte_stream_split_zstd_with_page_index.html --force sorted_join_datasets_byte_stream_split_zstd_with_page_index.bin &&
+    memray flamegraph --output sorted_join_datasets_byte_stream_split_zstd.html --force sorted_join_datasets_byte_stream_split_zstd.bin &&
+    memray flamegraph --output sorted_join_datasets_byte_stream_split.html --force sorted_join_datasets_byte_stream_split.bin &&
+    memray flamegraph --output sorted_join_datasets_zstd_with_page_index.html --force sorted_join_datasets_zstd_with_page_index.bin &&
+    memray flamegraph --output sorted_join_datasets_zstd.html --force sorted_join_datasets_zstd.bin
 """
 
 [tool.jupytext]
