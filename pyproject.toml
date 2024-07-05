@@ -32,13 +32,16 @@ shell = """
     python src/data/6000_x_5000_parquet_datasets_byte_stream_split_with_page_index.py &&
     python src/data/6000_x_5000_parquet_datasets_byte_stream_split_zstd_with_page_index.py &&
     python src/data/6000_x_5000_parquet_datasets_byte_stream_split_zstd.py &&
-    python src/data/6000_x_5000_parquet_datasets_byte_stream_split.py
+    python src/data/6000_x_5000_parquet_datasets_byte_stream_split.py &&
+    python src/data/6000_x_5000_parquet_datasets_byte_stream_split_lz4.py &&
+    python src/data/6000_x_5000_parquet_datasets_lz4.py
 """
 
 [tool.poe.tasks.benchmark_joins]
 shell = """
     rm -f ./*.bin &&
     rm -f ./*.html &&
+    rm -f ./*.json &&
     memray run --output join_datasets_with_page_index.bin --force src/benchmarking/join_datasets_with_page_index.py &&
     memray run --output join_datasets.bin --force src/benchmarking/join_datasets.py &&
     memray run --output join_tables_with_page_index.bin --force src/benchmarking/join_tables_with_page_index.py &&
@@ -53,6 +56,13 @@ shell = """
     memray run --output sorted_join_datasets_byte_stream_split.bin --force src/benchmarking/sorted_join_datasets_byte_stream_split.py &&
     memray run --output sorted_join_datasets_zstd_with_page_index.bin --force src/benchmarking/sorted_join_datasets_zstd_with_page_index.py &&
     memray run --output sorted_join_datasets_zstd.bin --force src/benchmarking/sorted_join_datasets_zstd.py &&
+    memray run --output sorted_join_datasets_lz4.bin --force src/benchmarking/sorted_join_datasets_lz4.py &&
+    memray run --output inner_sorted_join_datasets.bin --force src/benchmarking/inner_sorted_join_datasets.py &&
+    memray run --output inner_sorted_join_datasets_zstd.bin --force src/benchmarking/inner_sorted_join_datasets_zstd.py &&
+    memray run --output inner_sorted_join_datasets_lz4.bin --force src/benchmarking/inner_sorted_join_datasets_lz4.py &&
+    memray run --output inner_sorted_join_datasets_byte_stream_split.bin --force src/benchmarking/inner_sorted_join_datasets_byte_stream_split.py &&
+    memray run --output inner_sorted_join_datasets_byte_stream_split_zstd.bin --force src/benchmarking/inner_sorted_join_datasets_byte_stream_split_zstd.py &&
+    memray run --output inner_sorted_join_datasets_byte_stream_split_lz4.bin --force src/benchmarking/inner_sorted_join_datasets_byte_stream_split_lz4.py &&
     memray flamegraph --output join_datasets_with_page_index.html --force join_datasets_with_page_index.bin &&
     memray flamegraph --output join_datasets.html --force join_datasets.bin &&
     memray flamegraph --output join_tables_with_page_index.html --force join_tables_with_page_index.bin &&
@@ -66,7 +76,35 @@ shell = """
     memray flamegraph --output sorted_join_datasets_byte_stream_split_zstd.html --force sorted_join_datasets_byte_stream_split_zstd.bin &&
     memray flamegraph --output sorted_join_datasets_byte_stream_split.html --force sorted_join_datasets_byte_stream_split.bin &&
     memray flamegraph --output sorted_join_datasets_zstd_with_page_index.html --force sorted_join_datasets_zstd_with_page_index.bin &&
-    memray flamegraph --output sorted_join_datasets_zstd.html --force sorted_join_datasets_zstd.bin
+    memray flamegraph --output sorted_join_datasets_zstd.html --force sorted_join_datasets_zstd.bin &&
+    memray flamegraph --output sorted_join_datasets_lz4.html --force sorted_join_datasets_lz4.bin &&
+    memray flamegraph --output inner_sorted_join_datasets.html --force inner_sorted_join_datasets.bin &&
+    memray flamegraph --output inner_sorted_join_datasets_zstd.html --force inner_sorted_join_datasets_zstd.bin &&
+    memray flamegraph --output inner_sorted_join_datasets_lz4.html --force inner_sorted_join_datasets_lz4.bin &&
+    memray flamegraph --output inner_sorted_join_datasets_byte_stream_split.html --force inner_sorted_join_datasets_byte_stream_split.bin &&
+    memray flamegraph --output inner_sorted_join_datasets_byte_stream_split_zstd.html --force inner_sorted_join_datasets_byte_stream_split_zstd.bin &&
+    memray flamegraph --output inner_sorted_join_datasets_byte_stream_split_lz4.html --force inner_sorted_join_datasets_byte_stream_split_lz4.bin
+    memray stats --output join_datasets_with_page_index.json --force --json join_datasets_with_page_index.bin &&
+    memray stats --output join_datasets.json --force --json join_datasets.bin &&
+    memray stats --output join_tables_with_page_index.json --force --json join_tables_with_page_index.bin &&
+    memray stats --output join_tables.json --force --json join_tables.bin &&
+    memray stats --output sorted_join_datasets_with_page_index.json --force --json sorted_join_datasets_with_page_index.bin &&
+    memray stats --output sorted_join_datasets.json --force --json sorted_join_datasets.bin &&
+    memray stats --output sorted_join_tables_with_page_index.json --force --json sorted_join_tables_with_page_index.bin &&
+    memray stats --output sorted_join_tables.json --force --json sorted_join_tables.bin &&
+    memray stats --output sorted_join_datasets_byte_stream_split_with_page_index.json --force --json sorted_join_datasets_byte_stream_split_with_page_index.bin &&
+    memray stats --output sorted_join_datasets_byte_stream_split_zstd_with_page_index.json --force --json sorted_join_datasets_byte_stream_split_zstd_with_page_index.bin &&
+    memray stats --output sorted_join_datasets_byte_stream_split_zstd.json --force --json sorted_join_datasets_byte_stream_split_zstd.bin &&
+    memray stats --output sorted_join_datasets_byte_stream_split.json --force --json sorted_join_datasets_byte_stream_split.bin &&
+    memray stats --output sorted_join_datasets_zstd_with_page_index.json --force --json sorted_join_datasets_zstd_with_page_index.bin &&
+    memray stats --output sorted_join_datasets_zstd.json --force --json sorted_join_datasets_zstd.bin &&
+    memray stats --output sorted_join_datasets_lz4.json --force --json sorted_join_datasets_lz4.bin &&
+    memray stats --output inner_sorted_join_datasets.json --force --json inner_sorted_join_datasets.bin &&
+    memray stats --output inner_sorted_join_datasets_zstd.json --force --json inner_sorted_join_datasets_zstd.bin &&
+    memray stats --output inner_sorted_join_datasets_lz4.json --force --json inner_sorted_join_datasets_lz4.bin &&
+    memray stats --output inner_sorted_join_datasets_byte_stream_split.json --force --json inner_sorted_join_datasets_byte_stream_split.bin &&
+    memray stats --output inner_sorted_join_datasets_byte_stream_split_zstd.json --force --json inner_sorted_join_datasets_byte_stream_split_zstd.bin &&
+    memray stats --output inner_sorted_join_datasets_byte_stream_split_lz4.json --force --json inner_sorted_join_datasets_byte_stream_split_lz4.bin
 """
 
 [tool.jupytext]

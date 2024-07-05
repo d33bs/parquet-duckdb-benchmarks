@@ -4,8 +4,8 @@ from pyarrow import parquet
 with duckdb.connect() as ddb:
     result = ddb.execute("""
                 SELECT *
-                FROM read_parquet('src/data/table1_dataset_byte_stream_split_dataset_with_page_index/*') as table1
-                LEFT JOIN read_parquet('src/data/table2_dataset_byte_stream_split_dataset_with_page_index/*') as table2 ON
+                FROM read_parquet('src/data/table1_dataset_byte_stream_split_with_page_index/*') as table1
+                LEFT JOIN read_parquet('src/data/table2_dataset_byte_stream_split_with_page_index/*') as table2 ON
                     table1.key = table2.key
                 ORDER BY table1.key, table2.key;
                 """).arrow()
