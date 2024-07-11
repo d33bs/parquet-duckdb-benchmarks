@@ -5,7 +5,7 @@ import pyarrow.parquet as pq
 import os
 
 # Constants for the table dimensions and chunk size
-n_rows = 6000
+n_rows = 10000
 n_cols = 5000
 chunk_size = 1000
 

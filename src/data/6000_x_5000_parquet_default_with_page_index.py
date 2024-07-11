@@ -4,7 +4,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 # Constants for the table dimensions
-n_rows = 6000
+n_rows = 10000
 n_cols = 5000
 
 # Generate unique keys
